@@ -27,20 +27,20 @@ def ping_server():
 
 ######### BRACKET ROUTES #########
 
-@app.route('/brackets', method=['GET'])
+@app.route('/brackets', methods=['GET'])
 def all_public_brackets():
     # query db and find everything that is marked public
     public_brackets = Bracket.objects(private=False)
     return { "public_brackets" : public_brackets}
 
-@app.route('/bracket/<bracket_key>', method=['GET'])
+@app.route('/bracket/<bracket_key>', methods=['GET'])
 def show_bracket(bracket_key):
     # query db for specific bracket to vote
     # either end display or voting options
-    bracket = Bracket.objects(key=bracket_key)
-    return bracket.to_json()
+    bracket = Bracket.objects(key=bracket_key)[0]
+    return jsonify(bracket)
 
-@app.route('/bracket/<bracket_key>/vote', method=['PUT'])
+@app.route('/bracket/<bracket_key>/vote', methods=['PUT'])
 def add_vote(bracket_key):
     # query db for bracket key, request.json['option']
     option = request.json['option']
@@ -52,7 +52,7 @@ def add_vote(bracket_key):
     bracket.update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     return
 
-@app.route('/bracket/create', method=['POST'])
+@app.route('/bracket/create', methods=['POST'])
 def create_bracket():
     # bracket = Bracket(key, title, time_duration, num_rounds, round_duration,created_at, end_display_formation, private, voting_options)
     
@@ -64,8 +64,8 @@ def create_bracket():
     bracket = Bracket()
     bracket.title = request.json['title']
     bracket.key = gen_key()
-    bracket.num_rounds = log2(request.json['num_options'])
-    bracket.time_duration = request.json['duration']
+    bracket.num_rounds = log2(int(request.json['num_options']))
+    bracket.time_duration = int(request.json['duration'])
     bracket.round_duration = bracket.time_duration/bracket.num_rounds
     bracket.created_at = datetime.now()
     bracket.end_display_format = request.json['end_display']
@@ -77,13 +77,18 @@ def create_bracket():
             init_options[option] = 0
         return init_options
 
-    bracket.voting_options.round_options = request.json['options_list']
-    bracket.voting_options.votes = [gen_votes(request.json['options_list'])]
-    bracket.voting_options.totals = gen_votes(request.json['options_list'])
+    options = BracketOptions()
+
+    options.round_options = request.json['options_list']
+    options.votes = [gen_votes(request.json['options_list'])]
+    options.totals = gen_votes(request.json['options_list'])
+
+    bracket.voting_options = options
+
     bracket.save()
     return { "msg" : "bracket created", "bracket" : bracket }
 
-@app.route('/bracket/<bracket_key>/edit', method=['PUT'])
+@app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
 def update_duration(bracket_key):
     new_dur = request.json['duration']
     bracket = Bracket.objects(key=bracket_key)
@@ -92,7 +97,7 @@ def update_duration(bracket_key):
     bracket.update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
     return { "msg" : "duration updated"}
 
-@app.route('/bracket/<bracket_key>/tally', method=['PUT'])
+@app.route('/bracket/<bracket_key>/tally', methods=['PUT'])
 def tally_votes(bracket_key):
     # set up next round
     bracket = Bracket.objects(key=bracket_key)
@@ -121,7 +126,7 @@ def tally_votes(bracket_key):
     bracket.reload()
     return { "msg" : "bracket rounds updated", "bracket" : bracket.to_json() }
 
-@app.route('/bracket/<bracket_key>/', method=['DELETE'])
+@app.route('/bracket/<bracket_key>/', methods=['DELETE'])
 def delete_bracket(bracket_key):
     # delete bracket
     bracket = Bracket.objects(key=bracket_key)

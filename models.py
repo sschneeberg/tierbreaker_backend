@@ -26,7 +26,7 @@ class Bracket(Document):
     num_rounds = IntField() # log2(options)
     round_duration = IntField() # number in days
     created_at = DateField() 
-    end_display_format = StringField() # how to show the results
+    end_display_format = StringField() # how to show the results: Top, winner, or Full
     private = BooleanField() # if public, anyone can vote
     active = BooleanField() # if winner chosen, active if false
     voting_options = EmbeddedDocumentField(BracketOptions)
