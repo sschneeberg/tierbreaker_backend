@@ -4,7 +4,8 @@ from flask_mongoengine import MongoEngine
 from datetime import datetime, date
 from uuid import uuid4
 from math import log2
-from models import Bracket, BracketOptions, Keys, Round
+from random import randint
+from models import Bracket, BracketOptions, Keys
 
 # Set Up
 app = Flask(__name__)
@@ -76,7 +77,7 @@ def create_bracket():
             init_options[option] = 0
         return init_options
 
-    bracket.voting_options.init_options = request.json['options_list']
+    bracket.voting_options.round_options = request.json['options_list']
     bracket.voting_options.votes = [gen_votes(request.json['options_list'])]
     bracket.voting_options.totals = gen_votes(request.json['options_list'])
     bracket.save()
@@ -94,14 +95,38 @@ def update_duration(bracket_key):
 @app.route('/bracket/<bracket_key>/tally', method=['PUT'])
 def tally_votes(bracket_key):
     # set up next round
-    return
+    bracket = Bracket.objects(key=bracket_key)
+    # find the winners from each match up of the previous round
+    prev_round = bracket.voting_options.votes
+    prev_matchups = bracket.voting_options.round_options
+
+    def tally_round(matches, votes):
+        next_round = {}
+        next_matches = []
+        for i in range(0, len(matches), 2):
+            if votes[matches[i]] > votes[matches[i+1]]: 
+                next_matches.append(matches[i])
+                next_round[matches[i]] = 0
+            elif votes[matches[i]] < votes[matches[i+1]]:
+                next_matches.append(matches[i+1])
+                next_round[matches[i+1]] = 0
+            else: # in case of tie, randomize which advances
+                ind = randint(i, i+1)
+                next_matches.append(matches[ind])
+                next_round[matches[ind]] = 0
+        return next_matches, next_round
+    
+    next_matchups, next_round = tally_round(prev_matchups, prev_round)
+    bracket.update_one(push__voting_options__votes=next_round, set__voting_options__round_options=next_matchups)
+    bracket.reload()
+    return { "msg" : "bracket rounds updated", "bracket" : bracket.to_json() }
 
 @app.route('/bracket/<bracket_key>/', method=['DELETE'])
 def delete_bracket(bracket_key):
     # delete bracket
     bracket = Bracket.objects(key=bracket_key)
     bracket.delete()
-    return 
+    return { "msg" : "bracket deleted" }
 
 
 

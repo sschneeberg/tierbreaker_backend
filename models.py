@@ -4,7 +4,7 @@ class Keys(Document):
     key = StringField()
 
 class BracketOptions(EmbeddedDocument):
-    init_options = ListField(StringField())
+    round_options = ListField(StringField()) # [match1opt1, match1op2, match2opt1, match2opt2, etc.]
     votes = ListField(DictField(), blank=True) 
     # [ {option1: total_votes, option2: total_votes, etc.}, {option1: total_votes, option2: total_votes, etc.}, etc.]
     totals = DictField()
