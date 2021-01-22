@@ -32,7 +32,7 @@ describe('Bracket Routes', function () {
                 .get('/brackets')
                 .expect('Content-Type', /json/)
                 .then((response) => {
-                    brackets = response.body.public_brackets;
+                    const brackets = response.body.public_brackets;
                     for (let i = 0; i < brackets.length; i++) {
                         assert(brackets[i].private === false, true);
                     }
@@ -50,7 +50,7 @@ describe('Bracket Routes', function () {
                 .expect(200)
                 .expect('Content-Type', /json/)
                 .then((response) => {
-                    bracket = response.body;
+                    const bracket = response.body;
                     assert(bracket.key === key, true);
                     done();
                 })
@@ -74,7 +74,7 @@ describe('Bracket Routes', function () {
     //             .expect(200)
     //             .expect('Content-Type', /json/)
     //             .then((response) => {
-    //                 bracket = response.body.bracket;
+    //                 const bracket = response.body.bracket;
     //                 assert(bracket.num_rounds === Math.log2(8), true);
     //                 assert(bracket.time_duration === 4, true);
     //                 assert(bracket.round_duration === parseInt(4 / Math.log2(8)), true);
@@ -108,7 +108,7 @@ describe('Bracket Routes', function () {
     //         .expect(200)
     //         .expect('Content-Type', /json/)
     //         .then((response) => {
-    //             bracket = response.body.bracket;
+    //             const bracket = response.body.bracket;
     //             assert(bracket.num_rounds === Math.log2(8), true);
     //               // query keys from db and make sure it's not there
     //             done();
@@ -129,8 +129,8 @@ describe('Bracket Routes', function () {
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .then((response) => {
-                            bracketVoting = response.body.bracket.voting_options;
-                            prevVoting = prevVotes.data.voting_options;
+                            const bracketVoting = response.body.bracket.voting_options;
+                            const prevVoting = prevVotes.data.voting_options;
                             assert(
                                 bracketVoting.votes[bracketVoting.votes.length - 1][option] ===
                                     prevVoting.votes[prevVoting.votes.length - 1][option] + 1
@@ -183,10 +183,40 @@ describe('Bracket Routes', function () {
                         .expect(200)
                         .expect('Content-type', /json/)
                         .then((response) => {
-                            bracket = response.body.bracket;
+                            const bracket = response.body.bracket;
                             assert(bracket.time_duration !== originalDurations.total);
                             assert(bracket.round_duration !== originalDurations.round);
                             assert(bracket.round_duration === parseInt(duration / rounds_remaining));
+                            done();
+                        })
+                        .catch((err) => done(err));
+                })
+                .catch((err) => done(err));
+        });
+    });
+
+    describe('PUT /bracket/<bracket_key>/tally', function () {
+        it('should pick the appropirate winners', function (done) {
+            const key = '57000d62'; //for this key, option "one" should advance, "two" should not, and one of "three" or "four" should
+            axios
+                .get(`http://localhost:8000/bracket/${key}`)
+                .then((original) => {
+                    const lastRound = original.data.voting_options.round_options;
+                    request('http://localhost:8000')
+                        .put(`/bracket/${key}/tally`)
+                        .expect(200)
+                        .expect('Content-type', /json/)
+                        .then((response) => {
+                            const bracket = response.body.bracket;
+                            const newRound = bracket.voting_options.round_options;
+                            const newRoundVotes = bracket.voting_options.votes[bracket.voting_options.votes.length - 1];
+                            assert(newRound.length === parseInt(lastRound.length / 2));
+                            assert(newRoundVotes['one'] === 0);
+                            assert(!newRoundVotes['two']);
+                            assert(
+                                (newRoundVotes['three'] === 0 && !newRoundVotes['two']) ||
+                                    (newRoundVotes['four'] === 0 && !newRoundVotes['three'])
+                            );
                             done();
                         })
                         .catch((err) => done(err));
