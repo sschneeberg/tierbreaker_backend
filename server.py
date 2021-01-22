@@ -6,12 +6,21 @@ from uuid import uuid4
 from math import log2
 from random import randint
 from models import Bracket, BracketOptions, Keys
+from middleware import quick_sort
 from credentials import MONGO_URI
 
 # Set Up
 app = Flask(__name__)
 
+# to use mongo atlas
 app.config['MONGODB_HOST'] = MONGO_URI 
+
+# to use local db: 
+# app.config['MONGODB_SETTINGS'] = {
+#     'db' : 'tb_test',
+#     'host' : '127.0.0.1',
+#     'port' :  27017
+# }
 
 db = MongoEngine()
 db.init_app(app)
@@ -69,7 +78,7 @@ def create_bracket():
     bracket.key = gen_key()
     bracket.num_rounds = log2(int(request.json['num_options']))
     bracket.time_duration = int(request.json['duration'])
-    bracket.round_duration = bracket.time_duration/bracket.num_rounds
+    bracket.round_duration = bracket.time_duration / bracket.num_rounds
     bracket.created_at = datetime.now()
     bracket.end_display_format = request.json['end_display']
     bracket.private = request.json['private']
@@ -95,7 +104,7 @@ def update_duration(bracket_key):
     new_dur = int(request.json['duration'])
     bracket = Bracket.objects(key=bracket_key)[0]
     # if not working just make it total rounds
-    new_round_dur = new_dur // (bracket.num_rounds - len(bracket.voting_options.votes))
+    new_round_dur = new_dur / (bracket.num_rounds - len(bracket.voting_options.votes))
     Bracket.objects(id=bracket.id).update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
     bracket.reload()
     return { "msg" : "duration updated" , "bracket": bracket }
@@ -107,6 +116,7 @@ def tally_votes(bracket_key):
     # find the winners from each match up of the previous round
     prev_round = bracket.voting_options.votes[-1]
     prev_matchups = bracket.voting_options.round_options
+    print(prev_matchups)
 
     def tally_round(matches, votes):
         next_round = {}
@@ -124,10 +134,24 @@ def tally_votes(bracket_key):
                 next_round[matches[ind]] = 0
         return next_matches, next_round
     
+    if len(prev_matchups) == 1: return { "msg" :  "cannot tally completed brackets"}
     next_matchups, next_round = tally_round(prev_matchups, prev_round)
-    if len(next_round) == 1: return { "msg" : "bracket closed ", "winner" : next_round[0]}
     Bracket.objects(id=bracket.id).update_one(push__voting_options__votes=next_round, set__voting_options__round_options=next_matchups)
     bracket.reload()
+
+    def gen_winner(bracket):
+        if bracket.end_display_format.lower() == 'winner': 
+            Bracekt(id=bracket.id).update_one(set__end_display__winner={ bracket.voting_options.round_options[0] : bracket.voting_options.totals[bracket.voting_options.round_options[0]]})
+        else: 
+            sorted_totals = quick_sort.quick_sort(bracket.voting_options.totals)
+            if bracket.end_display_format.lower() == 'top': Bracket.objects(id=bracket.id).update_one(set__end_display__top_three=sorted_totals[:3])
+            if bracket.end_display_format.lower() == 'full': Bracket.objects(id=bracket.id).update_one(set__end_display__full_bracket=sorted_totals)
+        return
+
+    if len(next_round) == 1: 
+        gen_winner(bracket)
+        bracket.reload()
+    
     return { "msg" : "bracket rounds updated", "bracket" : bracket }
 
 @app.route('/bracket/<bracket_key>/delete', methods=['DELETE'])
