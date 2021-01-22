@@ -1,6 +1,7 @@
 # Imports
 from flask import Flask, jsonify, request
 from flask_mongoengine import MongoEngine
+from flask_cors import CORS
 from datetime import datetime, date
 from uuid import uuid4
 from math import log2
@@ -11,6 +12,7 @@ from credentials import MONGO_URI
 
 # Set Up
 app = Flask(__name__)
+CORS(app)
 
 # to use mongo atlas
 app.config['MONGODB_HOST'] = MONGO_URI 
