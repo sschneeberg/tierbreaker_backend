@@ -6,15 +6,13 @@ from uuid import uuid4
 from math import log2
 from random import randint
 from models import Bracket, BracketOptions, Keys
+from credentials import MONGO_URI
 
 # Set Up
 app = Flask(__name__)
 
-app.config['MONGODB_SETTINGS'] = {
-    'db': 'tb_test',
-    'host': 'localhost',
-    'port': 27017
-}
+app.config['MONGODB_HOST'] = MONGO_URI 
+
 db = MongoEngine()
 db.init_app(app)
 
@@ -37,7 +35,9 @@ def all_public_brackets():
 def show_bracket(bracket_key):
     # query db for specific bracket to vote
     # either end display or voting options
-    bracket = Bracket.objects(key=bracket_key)[0] # returns only one 
+    bracket = Bracket.objects(key=bracket_key) # returns only one 
+    if len(bracket) == 0: return { "msg" : "no bracket found" } 
+    bracket = bracket[0]
     return jsonify(bracket)
 
 @app.route('/bracket/<bracket_key>/vote', methods=['PUT'])
@@ -92,19 +92,20 @@ def create_bracket():
 
 @app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
 def update_duration(bracket_key):
-    new_dur = request.json['duration']
-    bracket = Bracket.objects(key=bracket_key)
+    new_dur = int(request.json['duration'])
+    bracket = Bracket.objects(key=bracket_key)[0]
     # if not working just make it total rounds
     new_round_dur = new_dur // (bracket.num_rounds - len(bracket.voting_options.votes))
-    bracket.update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
-    return { "msg" : "duration updated" }
+    Bracket.objects(id=bracket.id).update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
+    bracket.reload()
+    return { "msg" : "duration updated" , "bracket": bracket }
 
 @app.route('/bracket/<bracket_key>/tally', methods=['PUT'])
 def tally_votes(bracket_key):
     # set up next round
-    bracket = Bracket.objects(key=bracket_key)
+    bracket = Bracket.objects(key=bracket_key)[0]
     # find the winners from each match up of the previous round
-    prev_round = bracket.voting_options.votes
+    prev_round = bracket.voting_options.votes[-1]
     prev_matchups = bracket.voting_options.round_options
 
     def tally_round(matches, votes):
@@ -124,15 +125,17 @@ def tally_votes(bracket_key):
         return next_matches, next_round
     
     next_matchups, next_round = tally_round(prev_matchups, prev_round)
-    bracket.update_one(push__voting_options__votes=next_round, set__voting_options__round_options=next_matchups)
+    if len(next_round) == 1: return { "msg" : "bracket closed ", "winner" : next_round[0]}
+    Bracket.objects(id=bracket.id).update_one(push__voting_options__votes=next_round, set__voting_options__round_options=next_matchups)
     bracket.reload()
-    return { "msg" : "bracket rounds updated", "bracket" : bracket.to_json() }
+    return { "msg" : "bracket rounds updated", "bracket" : bracket }
 
-@app.route('/bracket/<bracket_key>/', methods=['DELETE'])
+@app.route('/bracket/<bracket_key>/delete', methods=['DELETE'])
 def delete_bracket(bracket_key):
     # delete bracket
-    bracket = Bracket.objects(key=bracket_key)
+    bracket = Bracket.objects(key=bracket_key)[0]
     bracket.delete()
+    # LATER : delete keys from master list of deleted brackets ??? this may be a security issue to discuss
     return { "msg" : "bracket deleted" }
 
 
