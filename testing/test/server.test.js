@@ -2,6 +2,8 @@ const request = require('supertest');
 const assert = require('assert');
 const axios = require('axios');
 
+// Note: prior to running tests, all bracket keys must be updated to existing db keys
+
 describe('Server', function () {
     describe('GET /ping', function () {
         it('should return a 200 status', function (done) {
@@ -117,7 +119,7 @@ describe('Bracket Routes', function () {
     describe('PUT /bracket/<bracket_key>/vote', function () {
         it('should increment the vote for the proper option by one', function (done) {
             const key = '57000d62';
-            const option = 'one';
+            const option = 'two';
             axios
                 .get(`http://localhost:8000/bracket/${key}`)
                 .then((prevVotes) => {
@@ -140,6 +142,42 @@ describe('Bracket Routes', function () {
                         .catch((err) => done(err));
                 })
                 .catch((err) => done(err));
+        });
+    });
+
+    // describe('DELETE /bracket/<bracket_key>/key', function () {
+    //     it('should delete a bracket', function (done) {
+    //         const key = 'ff7ac740';
+    //         request('http://localhost:8000')
+    //             .delete(`/bracket/${key}/delete`)
+    //             .expect(200)
+    //             .then((response) => {
+    //                 assert(response.body.msg === 'bracket deleted');
+    //                 axios
+    //                     .get(`http://localhost:8000/bracket/${key}`)
+    //                     .then((response) => {
+    //                         assert(response.data.msg === 'no bracket found');
+    //                         done();
+    //                     })
+    //                     .catch((err) => done(err));
+    //             })
+    //             .catch((err) => done(err));
+    //     });
+    // });
+
+    describe('PUt /bracket/<bracket_key>/edit', function () {
+        it('should change the round and total duration', function (done) {
+            const key = '6656a5b2';
+            const duration = '8';
+            axios.get(`http://localhost:8000/bracket/${key}`).then((original) => {
+                const originalDurations = { total: original.data.time_duration, round: original.data.round_duration };
+                response('http://localhost:8000')
+                    .put(`/bracket/${key}/edit`)
+                    .send({ duration: option })
+                    .expect(200)
+                    .expect('Content-type', /json/)
+                    .then((resposne) => {});
+            });
         });
     });
 });
