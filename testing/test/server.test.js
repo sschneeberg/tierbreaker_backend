@@ -169,15 +169,29 @@ describe('Bracket Routes', function () {
         it('should change the round and total duration', function (done) {
             const key = '6656a5b2';
             const duration = '8';
-            axios.get(`http://localhost:8000/bracket/${key}`).then((original) => {
-                const originalDurations = { total: original.data.time_duration, round: original.data.round_duration };
-                response('http://localhost:8000')
-                    .put(`/bracket/${key}/edit`)
-                    .send({ duration: option })
-                    .expect(200)
-                    .expect('Content-type', /json/)
-                    .then((resposne) => {});
-            });
+            axios
+                .get(`http://localhost:8000/bracket/${key}`)
+                .then((original) => {
+                    const originalDurations = {
+                        total: original.data.time_duration,
+                        round: original.data.round_duration
+                    };
+                    const rounds_remaining = original.data.num_rounds - original.data.voting_options.votes.length;
+                    request('http://localhost:8000')
+                        .put(`/bracket/${key}/edit`)
+                        .send({ duration: duration })
+                        .expect(200)
+                        .expect('Content-type', /json/)
+                        .then((response) => {
+                            bracket = response.body.bracket;
+                            assert(bracket.time_duration !== originalDurations.total);
+                            assert(bracket.round_duration !== originalDurations.round);
+                            assert(bracket.round_duration === parseInt(duration / rounds_remaining));
+                            done();
+                        })
+                        .catch((err) => done(err));
+                })
+                .catch((err) => done(err));
         });
     });
 });
