@@ -79,8 +79,8 @@ def create_bracket():
     bracket.title = request.json['title']
     bracket.key = gen_key()
     bracket.num_rounds = log2(int(request.json['num_options']))
-    bracket.time_duration = int(request.json['duration'])
-    bracket.round_duration = bracket.time_duration / bracket.num_rounds
+    bracket.time_duration = int(request.json['duration'])*bracket.num_rounds
+    bracket.round_duration = int(request.json['duration'])
     bracket.created_at = datetime.now()
     bracket.end_display_format = request.json['end_display']
     bracket.private = request.json['private']
