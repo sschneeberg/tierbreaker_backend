@@ -104,10 +104,11 @@ def create_bracket():
 @app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
 def update_bracket(bracket_key):
     bracket = Bracket.objects(key=bracket_key)[0]
-    if request.json['duration']:
-        new_round_dur = int(request.json['duration'])
-        new_dur = new_round_dur * (bracket.num_rounds - len(bracket.voting_options.votes))
-        Bracket.objects(id=bracket.id).update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
+    # STRETCH GOAL: Reinstate this, proving unnecessarily complicated on front end
+    # if request.json['duration']:
+    #     new_round_dur = int(request.json['duration'])
+    #     new_dur = new_round_dur * (bracket.num_rounds - (len(bracket.voting_options.votes)-1))
+    #     Bracket.objects(id=bracket.id).update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
     if request.json['title']:
         Bracket.objects(id=bracket.id).update_one(set__title=request.json['title'])
     if request.json['private'] or request.json['private'] == False:

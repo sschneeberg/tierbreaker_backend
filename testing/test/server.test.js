@@ -23,6 +23,7 @@ describe('Server', function () {
 });
 
 describe('Bracket Routes', function () {
+    // POST TEST
     // describe('POST /bracket/create', function () {
     //     it('should build a bracket', function (done) {
     //         const opts = ['one', 'two', 'three', 'four'];
@@ -59,6 +60,7 @@ describe('Bracket Routes', function () {
     //             .catch((err) => done(err));
     //     });
     // });
+    // GET PUBLIC BRACKETS TEST
     // describe('GET /brackets', function () {
     //     it('should return a 200 status', function (done) {
     //         request('http://localhost:8000').get('/brackets').expect(200, done);
@@ -77,6 +79,7 @@ describe('Bracket Routes', function () {
     //             .catch((err) => done(err));
     //     });
     // });
+    // GET <bracket_key> TEST
     // describe('GET /brackets/<bracket_key>', function () {
     //     it('should grab a single bracket for the given key', function (done) {
     //         const key = '';
@@ -92,6 +95,7 @@ describe('Bracket Routes', function () {
     //             .catch((err) => done(err));
     //     });
     // });
+    // VOTE TEST
     // describe('PUT /bracket/<bracket_key>/vote', function () {
     //     it('should increment the vote for the proper option by one', function (done) {
     //         const key = '';
@@ -119,40 +123,31 @@ describe('Bracket Routes', function () {
     //             .catch((err) => done(err));
     //     });
     // });
+    // EDIT TEST
     // describe('PUT /bracket/<bracket_key>/edit', function () {
     //     it('should change the round and total duration', function (done) {
     //         const key = '';
-    //         const duration = '3';
     //         const title = 'New Who Would Win';
     //         const private = false;
-    //         axios
-    //             .get(`http://localhost:8000/bracket/${key}`)
-    //             .then((original) => {
-    //                 const originalDurations = {
-    //                     total: original.data.time_duration,
-    //                     round: original.data.round_duration
-    //                 };
-    //                 const rounds_remaining = original.data.num_rounds - original.data.voting_options.votes.length;
-    //                 request('http://localhost:8000')
-    //                     .put(`/bracket/${key}/edit`)
-    //                     .send({ duration: duration, title: title, private: private })
-    //                     .expect(200)
-    //                     .expect('Content-type', /json/)
-    //                     .then((response) => {
-    //                         const bracket = response.body.bracket;
-    //                         assert(bracket.time_duration !== originalDurations.total, true);
-    //                         assert(bracket.round_duration !== originalDurations.round, true);
-    //                         assert(bracket.round_duration === parseInt(duration), true);
-    //                         assert(bracket.time_duration === parseInt(duration) * rounds_remaining, true);
-    //                         assert(bracket.title === title, true);
-    //                         assert(bracket.private === private, true);
-    //                         done();
-    //                     })
-    //                     .catch((err) => done(err));
+    //     request('http://localhost:8000')
+    //             .put(`/bracket/${key}/edit`)
+    //             .send({ title: title, private: private })
+    //             .expect(200)
+    //             .expect('Content-type', /json/)
+    //             .then((response) => {
+    //                 const bracket = response.body.bracket;
+    //                 assert(bracket.time_duration !== originalDurations.total, true);
+    //                 assert(bracket.round_duration !== originalDurations.round, true);
+    //                 assert(bracket.round_duration === parseInt(duration), true);
+    //                 assert(bracket.time_duration === parseInt(duration) * rounds_remaining, true);
+    //                 assert(bracket.title === title, true);
+    //                 assert(bracket.private === private, true);
+    //                 done();
     //             })
     //             .catch((err) => done(err));
     //     });
     // });
+    // DELETE TEST
     // describe('DELETE /bracket/<bracket_key>/delete', function () {
     //     it('should delete a bracket', function (done) {
     //         const key = '';
@@ -172,6 +167,7 @@ describe('Bracket Routes', function () {
     //             .catch((err) => done(err));
     //     });
     // });
+    // TALLY TEST
     // describe('PUT /bracket/<bracket_key>/tally', function () {
     //     it('should pick the appropirate winners', function (done) {
     //         const key = ''; //for this key, option "one" should advance, "two" should not, and one of "three" or "four" should
