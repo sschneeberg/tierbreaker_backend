@@ -6,16 +6,17 @@ class Keys(Document):
 class BracketOptions(EmbeddedDocument):
     round_options = ListField(StringField()) # [match1opt1, match1op2, match2opt1, match2opt2, etc.]
     votes = ListField(DictField(), blank=True) 
-    # [ {option1: total_votes, option2: total_votes, etc.}, {option1: total_votes, option2: total_votes, etc.}, etc.]
+    # example: 
+    # [ {round1opt1: round_votes, round1opt2: round_votes, round1opt3: round_votes, round1opt4: round_votes}, {round2opt1: round_votes, round2opt2: round_votes}, {winner: round_votes}]
     totals = DictField()
     # {option1: total_votes, option2: total_votes, etc.}
 
 class EndDisplay(EmbeddedDocument):
-    winner = DictField() # {option: total_votes}
+    winner = DictField() # {winning_option: total_votes}
     top_three = ListField(DictField()) 
-    # [{option: total_votes}, {option: total_votes}, {option: total_votes}]
+    # [{winning_option: total_votes}, {second_place_option: total_votes}, {third_place_option: total_votes}]
     full_bracket = ListField(DictField()) 
-    # [top_tier(winner), second_tier, etc. ] where each is {option: total_votes}
+   # [ sorted array of all options from winner to loser ] where each element is {option: total_votes}
 
 
 
@@ -28,7 +29,6 @@ class Bracket(Document):
     created_at = DateField() 
     end_display_format = StringField() # how to show the results: Top, winner, or Full
     private = BooleanField() # if public, anyone can vote
-    active = BooleanField() # if winner chosen, active if false
     voting_options = EmbeddedDocumentField(BracketOptions)
     end_display = EmbeddedDocumentField(EndDisplay)
 
