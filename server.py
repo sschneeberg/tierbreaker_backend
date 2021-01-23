@@ -103,13 +103,17 @@ def create_bracket():
 
 @app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
 def update_duration(bracket_key):
-    new_dur = int(request.json['duration'])
     bracket = Bracket.objects(key=bracket_key)[0]
-    # if not working just make it total rounds
-    new_round_dur = new_dur / (bracket.num_rounds - len(bracket.voting_options.votes))
-    Bracket.objects(id=bracket.id).update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
+    if request.json['duration']:
+        new_round_dur = int(request.json['duration'])
+        new_dur = new_round_dur * bracket.num_rounds
+        Bracket.objects(id=bracket.id).update_one(set__time_duration=new_dur, set__round_duration=new_round_dur)
+    elif request.json['title']:
+        Bracket.objects(id=bracket.id).update_one(set__title=request.json['title'])
+    elif request.json['private']:
+        Bracket.objects(id=bracket.id).update_one(set__private=request.json['private'])
     bracket.reload()
-    return { "msg" : "duration updated" , "bracket": bracket }
+    return { "msg" : "bracket updated" , "bracket": bracket }
 
 @app.route('/bracket/<bracket_key>/tally', methods=['PUT'])
 def tally_votes(bracket_key):
