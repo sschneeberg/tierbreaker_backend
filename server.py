@@ -111,7 +111,7 @@ def create_bracket():
     options.totals = gen_votes(request.json['options_list'])
     bracket.voting_options = options
     bracket.save()
-    socekt.emit('vote_cast', { "key" : bracket.key })
+    socket.emit('vote_cast', { "key" : bracket.key })
     return { "msg" : "bracket created", "bracket" : bracket }
 
 @app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
