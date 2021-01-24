@@ -41,9 +41,9 @@ def confirm_connect():
 def confirm_disconnect():
     print('client disconnected')
 
-@socket.on('vote')
-def vote_cast(key):
-    emit('vote_cast', key, broadcast=True)
+# @socket.on('vote')
+# def vote_cast(key):
+#     emit('vote_cast', key, broadcast=True)
 #alternatively, this could be in the vote route?
 
 
@@ -75,6 +75,7 @@ def add_vote(bracket_key):
     total_votes[option] += 1
     Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     bracket.reload()
+    socket.emit('vote_cast', { "key" : bracket.key })
     return { "vote": f"bracket option: {option} updated", "bracket": bracket}
 
 @app.route('/bracket/create', methods=['POST'])
@@ -111,7 +112,6 @@ def create_bracket():
     options.totals = gen_votes(request.json['options_list'])
     bracket.voting_options = options
     bracket.save()
-    socket.emit('vote_cast', { "key" : bracket.key })
     return { "msg" : "bracket created", "bracket" : bracket }
 
 @app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
