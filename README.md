@@ -13,12 +13,13 @@ The app is deployed on heroku at [tierbreaker.herokuapp.com](https://tierbreaker
     - flask
     - flask_mongoengine
     - flask_cors
+    - flask-socketio
 3. Set up connection to MongoDB:
    This app is set up to access a remote Monog Atlas Cluster. To connect to your own, create a `credentials.py` file with a `MONOG_URI` variable containing your remote URI.
 
     To use MongoDb on your lcoal machine, do the following in server.py:
 
-    - Comment out or remove line 11 and line 18 (which connect to credentials.py and configure the URI)
+    - Comment out or remove line 11 and line 19 (which connect to credentials.py and configure the URI)
 
     - Uncomment lines 21 to 25, and confirm the db name, host, and port align with your desired local connection
 

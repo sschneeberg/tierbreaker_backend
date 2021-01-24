@@ -2,6 +2,7 @@
 from flask import Flask, jsonify, request
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 from datetime import datetime, date
 from uuid import uuid4
 from math import log2
@@ -9,29 +10,41 @@ from random import randint
 from models import Bracket, BracketOptions, Keys
 from middleware import quick_sort
 from credentials import MONGO_URI
-
 # Set Up
 app = Flask(__name__)
+app.config['SERVER_NAME'] = 'localhost:8000' 
 CORS(app)
-
-# to use mongo atlas
+socket = SocketIO(app, cors_allowed_origins="*")
+# to use mongo atlas:
 app.config['MONGODB_HOST'] = MONGO_URI 
-
 # to use local db: 
 # app.config['MONGODB_SETTINGS'] = {
 #     'db' : 'tb_test',
 #     'host' : '127.0.0.1',
 #     'port' :  27017
 # }
-
 db = MongoEngine()
 db.init_app(app)
-
 
 @app.route('/', methods=['GET'])
 def ping_server():
     # check if server is running
     return { "ping" : "pong" }
+
+######### SOCKET LISTENERS #########
+
+@socket.on('connect')
+def confirm_connect():
+    print('client connected')
+
+@socket.on('disconnect')
+def confirm_disconnect():
+    print('client disconnected')
+
+@socket.on('vote')
+def vote_cast(key):
+    emit('vote_cast', key, broadcast=True)
+#alternatively, this could be in the vote route?
 
 
 ######### BRACKET ROUTES #########
@@ -98,7 +111,7 @@ def create_bracket():
     options.totals = gen_votes(request.json['options_list'])
     bracket.voting_options = options
     bracket.save()
-
+    socekt.emit('vote_cast', { "key" : bracket.key })
     return { "msg" : "bracket created", "bracket" : bracket }
 
 @app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
@@ -173,7 +186,7 @@ def delete_bracket(bracket_key):
 
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    socket.run(app)
 
 
     
