@@ -10,7 +10,7 @@ Backend deployed at [tierbreakerapi.herokuapp.com](https://tierbreakerapi.heroku
 ## Installation
 
 1. `Fork` and `Clone` this repository to your local machine.
-2. Install Pyhton3 dependencies: (You can use pipenv to grab the requirements from the pipfile)
+2. Install Pyhton3 dependencies: (You can use `pipenv install` to grab the requirements from the pipfile)
     - flask
     - flask-mongoengine
     - flask-cors
