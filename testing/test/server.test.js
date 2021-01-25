@@ -124,13 +124,13 @@ describe('Bracket Routes', function () {
     //     });
     // });
     // EDIT TEST
-    // describe('PUT /bracket/<bracket_key>/edit', function () {
+    // describe('PUT /bracket/<bracket_id>/edit', function () {
     //     it('should change the round and total duration', function (done) {
-    //         const key = '';
+    //         const id = '';
     //         const title = 'New Who Would Win';
     //         const private = false;
     //     request('http://localhost:8000')
-    //             .put(`/bracket/${key}/edit`)
+    //             .put(`/bracket/${id}/edit`)
     //             .send({ title: title, private: private })
     //             .expect(200)
     //             .expect('Content-type', /json/)

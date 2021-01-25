@@ -114,9 +114,9 @@ def create_bracket():
     bracket.save()
     return { "msg" : "bracket created", "bracket" : bracket }
 
-@app.route('/bracket/<bracket_key>/edit', methods=['PUT'])
-def update_bracket(bracket_key):
-    bracket = Bracket.objects(key=bracket_key)[0]
+@app.route('/bracket/<bracket_id>/edit', methods=['PUT'])
+def update_bracket(bracket_id):
+    bracket = Bracket.objects(id=bracket_id)[0]
     # STRETCH GOAL: Reinstate this, proving unnecessarily complicated on front end
     # if request.json['duration']:
     #     new_round_dur = int(request.json['duration'])
