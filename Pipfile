@@ -10,6 +10,7 @@ flask-socketio = "*"
 flask-cors = "*"
 gunicorn = "*"
 python-dotenv = "*"
+gevent-websocket = "*"
 
 [dev-packages]
 
