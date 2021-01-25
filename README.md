@@ -4,15 +4,16 @@ Find the front end repository at [github.com/NikkiHmltn/tier-breaker](https://gi
 
 This is a Flask API, using MongoDB through MonogEngine.
 
-The app is deployed on heroku at [tierbreaker.herokuapp.com](https://tierbreaker.herokuapp.com)
+The app is deployed on heroku at [tierbreaker.herokuapp.com](https://tier-breaker.herokuapp.com)
+Backend deployed at [tierbreakerapi.herokuapp.com](https://tierbreakerapi.herokuapp.com)
 
 ## Installation
 
 1. `Fork` and `Clone` this repository to your local machine.
 2. Install Pyhton3 dependencies:
     - flask
-    - flask_mongoengine
-    - flask_cors
+    - flask-mongoengine
+    - flask-cors
     - flask-socketio
 3. Set up connection to MongoDB:
    This app is set up to access a remote Monog Atlas Cluster. To connect to your own, create a `credentials.py` file with a `MONOG_URI` variable containing your remote URI.
