@@ -9,6 +9,7 @@ flask-mongoengine = "*"
 flask-socketio = "*"
 flask-cors = "*"
 gunicorn = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

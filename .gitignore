@@ -130,3 +130,5 @@ dmypy.json
 
 node_modules
 credentials.py
+
+config.py

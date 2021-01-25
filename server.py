@@ -3,20 +3,22 @@ from flask import Flask, jsonify, request
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
+from dotenv import load_dotenv
 from datetime import datetime, date
 from uuid import uuid4
 from math import log2
 from random import randint
 from models import Bracket, BracketOptions, Keys
 from middleware import quick_sort
-from credentials import MONGO_URI
+from os import environ
+
 # Set Up
+load_dotenv('.env')
 app = Flask(__name__)
-app.config['SERVER_NAME'] = 'localhost:8000' 
 CORS(app)
 socket = SocketIO(app, cors_allowed_origins="*")
 # to use mongo atlas:
-app.config['MONGODB_HOST'] = MONGO_URI 
+app.config['MONGODB_HOST'] = environ.get("MONGO_URI")
 # to use local db: 
 # app.config['MONGODB_SETTINGS'] = {
 #     'db' : 'tb_test',
