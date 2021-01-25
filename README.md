@@ -2,7 +2,7 @@
 
 Find the front end repository at [github.com/NikkiHmltn/tier-breaker](https://github.com/NikkiHmltn/tier-breaker)
 
-This is a Flask API, using MongoDB through MonogEngine.
+This is a Flask API, using MongoDB through MongoEngine.
 
 The app is deployed on heroku at [tierbreaker.herokuapp.com](https://tier-breaker.herokuapp.com)
 Backend deployed at [tierbreakerapi.herokuapp.com](https://tierbreakerapi.herokuapp.com)
@@ -10,21 +10,23 @@ Backend deployed at [tierbreakerapi.herokuapp.com](https://tierbreakerapi.heroku
 ## Installation
 
 1. `Fork` and `Clone` this repository to your local machine.
-2. Install Pyhton3 dependencies:
+2. Install Pyhton3 dependencies: (You can use pipenv to grab the requirements from the pipfile)
     - flask
     - flask-mongoengine
     - flask-cors
     - flask-socketio
+    - pyhton-env
+    - gevent-websockets
 3. Set up connection to MongoDB:
-   This app is set up to access a remote Monog Atlas Cluster. To connect to your own, create a `credentials.py` file with a `MONOG_URI` variable containing your remote URI.
+   This app is set up to access a remote Mongo Atlas Cluster. To connect to your own, create a `.env` file with a `MONOG_URI` variable containing your remote URI.
 
     To use MongoDb on your lcoal machine, do the following in server.py:
 
-    - Comment out or remove line 11 and line 19 (which connect to credentials.py and configure the URI)
+    - Comment out or remove line 21 (which connect to .env and configure the URI)
 
-    - Uncomment lines 21 to 25, and confirm the db name, host, and port align with your desired local connection
+    - Uncomment lines 23 to 27, and confirm the db name, host, and port align with your desired local connection
 
-4. In terminal, run `python3 server.py` to start the api on port 8000
+4. In terminal, run `python3 server.py` to start the api on port 5000
 
 ## Using the API
 
