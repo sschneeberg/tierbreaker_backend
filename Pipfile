@@ -12,6 +12,7 @@ gunicorn = "*"
 python-dotenv = "*"
 gevent-websocket = "*"
 gevent = "*"
+eventlet = "*"
 
 [dev-packages]
 
