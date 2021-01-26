@@ -41,7 +41,7 @@ def confirm_connect():
 
 @socket.on('disconnect')
 def confirm_disconnect():
-    print('CLIENT DISCONNECTED _____________________________' + socket.id)
+    print('CLIENT DISCONNECTED _____________________________')
 
 # @socket.on('vote')
 # def vote_cast(key):
