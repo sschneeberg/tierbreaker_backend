@@ -48,6 +48,11 @@ def return_connect(id):
     print('!!! __________________________________ ¡¡¡', id)
     emit('¡¡¡')
 
+@socket.on('vote')
+def broadcast_vote(key):
+    print('VOTE CAST ____________________________')
+    emit('vote_cast', { "key": key }, broadcast=True)
+
 
 ######### BRACKET ROUTES #########
 
@@ -77,9 +82,9 @@ def add_vote(bracket_key):
     total_votes[option] += 1
     Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     bracket.reload()
-    print('SOCKET ABOUT TO RUN ___________________')
-    socket.emit('vote_cast', { "key" : bracket.key })
-    print('SOCEKT SHOULD HAVE RUN ___________________')
+    # print('SOCKET ABOUT TO RUN ___________________')
+    # socket.emit('vote_cast', { "key" : bracket.key })
+    # print('SOCEKT SHOULD HAVE RUN ___________________')
     return { "msg": f"bracket option: {option} updated", "bracket": bracket}
 
 @app.route('/bracket/create', methods=['POST'])
