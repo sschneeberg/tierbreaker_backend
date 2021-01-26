@@ -16,7 +16,7 @@ from os import environ
 load_dotenv('.env')
 app = Flask(__name__)
 CORS(app)
-socket = SocketIO(app, cors_allowed_origins="*")
+socket = SocketIO(app, cors_allowed_origins="*", logger=True, engineio_logger=True, ssl_verify=False)
 # to use mongo atlas:
 app.config['MONGODB_HOST'] = environ.get("MONGO_URI")
 # to use local db: 
@@ -41,7 +41,7 @@ def confirm_connect():
 
 @socket.on('disconnect')
 def confirm_disconnect():
-    print('CLIENT DISCONNECTED _____________________________')
+    print('CLIENT DISCONNECTED _____________________________' + socket.id)
 
 # @socket.on('vote')
 # def vote_cast(key):
