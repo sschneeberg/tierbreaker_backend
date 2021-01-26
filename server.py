@@ -37,16 +37,16 @@ def ping_server():
 
 @socket.on('connect')
 def confirm_connect():
-    print('CLIENT CONNECTED _______________________________')
+    print('CLIENT CONNECTED _______________________________' , socket.sid )
 
 @socket.on('disconnect')
 def confirm_disconnect():
-    print('CLIENT DISCONNECTED _____________________________')
+    print('CLIENT DISCONNECTED _____________________________' , socket.sid)
 
 @socket.on('!!!')
-def return_connect():
-    print('!!! __________________________________ ¡¡¡')
-    emit('¡¡¡')
+def return_connect(id):
+    print('!!! __________________________________ ¡¡¡', id)
+    emit('¡¡¡', socket.sid)
 
 
 ######### BRACKET ROUTES #########
