@@ -43,10 +43,10 @@ def confirm_connect():
 def confirm_disconnect():
     print('CLIENT DISCONNECTED _____________________________')
 
-# @socket.on('vote')
-# def vote_cast(key):
-#     emit('vote_cast', key, broadcast=True)
-#alternatively, this could be in the vote route?
+@socket.on('!!!')
+def return_connect():
+    print('!!! __________________________________ ¡¡¡')
+    emit('¡¡¡')
 
 
 ######### BRACKET ROUTES #########
