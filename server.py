@@ -37,16 +37,11 @@ def ping_server():
 
 @socket.on('connect')
 def confirm_connect():
-    print('CLIENT CONNECTED _______________________________' , request)
+    print('CLIENT CONNECTED _______________________________')
 
 @socket.on('disconnect')
 def confirm_disconnect():
-    print('CLIENT DISCONNECTED _____________________________', request)
-
-@socket.on('!!!')
-def return_connect(id):
-    print('!!! __________________________________ ¡¡¡', id)
-    emit('¡¡¡')
+    print('CLIENT DISCONNECTED _____________________________')
 
 @socket.on('vote')
 def broadcast_vote(key):
@@ -82,9 +77,6 @@ def add_vote(bracket_key):
     total_votes[option] += 1
     Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     bracket.reload()
-    # print('SOCKET ABOUT TO RUN ___________________')
-    # socket.emit('vote_cast', { "key" : bracket.key })
-    # print('SOCEKT SHOULD HAVE RUN ___________________')
     return { "msg": f"bracket option: {option} updated", "bracket": bracket}
 
 @app.route('/bracket/create', methods=['POST'])
@@ -134,7 +126,6 @@ def update_bracket(bracket_key):
     if request.json['title']:
         Bracket.objects(id=bracket.id).update_one(set__title=request.json['title'])
     if request.json['private'] or request.json['private'] == False:
-        print('PRIVATE')
         Bracket.objects(id=bracket.id).update_one(set__private=request.json['private'])
     bracket.reload()
     return { "msg" : "bracket updated" , "bracket": bracket }
@@ -146,8 +137,6 @@ def tally_votes(bracket_key):
     # find the winners from each match up of the previous round
     prev_round = bracket.voting_options.votes[-1]
     prev_matchups = bracket.voting_options.round_options
-    print(prev_matchups)
-
     def tally_round(matches, votes):
         next_round = {}
         next_matches = []

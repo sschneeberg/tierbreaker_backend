@@ -38,8 +38,8 @@ def test_uuid():
         else: keys[key] = True
     return len(collisions)
 
-print(test_collisions()) # consistently returns 30-45 collisions in 
-print(test_uuid()) # at len 6 300+ collisions, at len 8, 0-4 collisions in 6 tests
+# print(test_collisions()) # consistently returns 30-45 collisions in 
+# print(test_uuid()) # at len 6 300+ collisions, at len 8, 0-4 collisions in 6 tests
 
 
 
