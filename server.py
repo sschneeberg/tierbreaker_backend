@@ -37,11 +37,11 @@ def ping_server():
 
 @socket.on('connect')
 def confirm_connect():
-    print('client connected')
+    print('CLIENT CONNECTED _______________________________')
 
 @socket.on('disconnect')
 def confirm_disconnect():
-    print('client disconnected')
+    print('CLIENT DISCONNECTED _____________________________')
 
 # @socket.on('vote')
 # def vote_cast(key):
@@ -77,7 +77,9 @@ def add_vote(bracket_key):
     total_votes[option] += 1
     Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     bracket.reload()
+    print('SOCKET ABOUT TO RUN ___________________')
     socket.emit('vote_cast', { "key" : bracket.key })
+    print('SOCEKT SHOULD HAVE RUN ___________________')
     return { "msg": f"bracket option: {option} updated", "bracket": bracket}
 
 @app.route('/bracket/create', methods=['POST'])
