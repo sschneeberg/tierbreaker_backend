@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "13a0749cfd133d66ece8e69bb31bb6565a7868b937b93cf46b7f3a56f749a6c6"
+            "sha256": "0fec515b3a1822ef624c3282261f238e2bfbe7d151d16498819820ac597911ad"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -117,7 +117,7 @@
                 "sha256:f0498df97a303da77e180a9368c9228b0fc94d10dd2ce79fc5ebb63fec0d2fc9",
                 "sha256:f91fd07b9cf642f24e58ed381e19ec33e28b8eee8726c19b026ea24fcc9ff897"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
+            "index": "pypi",
             "version": "==21.1.2"
         },
         "gevent-websocket": {
