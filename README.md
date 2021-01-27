@@ -113,7 +113,9 @@ The test file, when first cloned down, will have only the "ping" test uncommente
 
     - opts = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight']
 
-    - duration = '4' - private = false
+    - duration = '4'
+
+    - private = false
 
     Uncomment the GET /bracket and GET /bracket/<bracket_key> tests, add the key you got from MONGO to the latter.
 

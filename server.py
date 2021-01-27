@@ -47,7 +47,7 @@ def confirm_disconnect():
 # def broadcast_vote(key):
 #     print('VOTE CAST ____________________________')
 #     emit('vote_cast', { "key": key }, broadcast=True)
-
+# ^ alternate option for emit in vote routes
 
 ######### BRACKET ROUTES #########
 
@@ -82,7 +82,7 @@ def add_vote(bracket_key):
 
 @app.route('/bracket/create', methods=['POST'])
 def create_bracket():
-    # bracket = Bracket(key, title, time_duration, num_rounds, round_duration,created_at, end_display_formation, private, voting_options)
+    # need: bracket = Bracket(key, title, time_duration, num_rounds, round_duration,created_at, end_display_formation, private, voting_options)
     
     def gen_key():
         poll_key = uuid4().hex[:8]
