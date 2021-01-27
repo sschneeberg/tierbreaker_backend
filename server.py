@@ -185,7 +185,7 @@ def delete_bracket(bracket_key):
 ######### BOT ROUTES #########
 
 @app.route('/bracket/<bracket_key>/bulkvote', methods=['PUT'])
-def add_vote(bracket_key):
+def add_bulk_vote(bracket_key):
     # query db for bracket key, request.json['option']
     #add votes with request.json['count']
     option = request.json['option']
