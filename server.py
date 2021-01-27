@@ -160,7 +160,7 @@ def tally_votes(bracket_key):
 
     def gen_winner(bracket):
         if bracket.end_display_format.lower() == 'winner': 
-            Bracekt(id=bracket.id).update_one(set__end_display__winner={ bracket.voting_options.round_options[0] : bracket.voting_options.totals[bracket.voting_options.round_options[0]]})
+            Bracket(id=bracket.id).update_one(set__end_display__winner={ bracket.voting_options.round_options[0] : bracket.voting_options.totals[bracket.voting_options.round_options[0]]})
         else: 
             sorted_totals = quick_sort.quick_sort(bracket.voting_options.totals)
             if bracket.end_display_format.lower() == 'top': Bracket.objects(id=bracket.id).update_one(set__end_display__top_three=sorted_totals[:3])
