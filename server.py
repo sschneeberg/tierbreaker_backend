@@ -182,6 +182,24 @@ def delete_bracket(bracket_key):
     return { "msg" : "bracket deleted" }
 
 
+######### BOT ROUTES #########
+
+@app.route('/bracket/<bracket_key>/bulkvote', methods=['PUT'])
+def add_vote(bracket_key):
+    # query db for bracket key, request.json['option']
+    #add votes with request.json['count']
+    option = request.json['option']
+    bracket = Bracket.objects(key=bracket_key)[0]
+    round_votes = bracket.voting_options.votes
+    round_votes[-1][option] = round_votes[-1][option] + request.json['count']
+    total_votes = bracket.voting_options.totals
+    total_votes[option] = total_votes[option] + request.json['count']
+    Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
+    bracket.reload()
+    return { "msg": f"bracket option: {option} updated"}
+
+
+######### RUN APP #########
 
 if __name__ == '__main__':
     socket.run(app)
