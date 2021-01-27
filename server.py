@@ -197,6 +197,7 @@ def add_bulk_vote(bracket_key):
     total_votes[option] = total_votes[option] + request.json['count']
     Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     bracket.reload()
+    socket.emit('vote_cast', { "key": bracket.key })
     return { "msg": f"bracket option: {option} updated"}
 
 
