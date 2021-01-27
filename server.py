@@ -77,7 +77,7 @@ def add_vote(bracket_key):
     total_votes[option] += 1
     Bracket.objects(id=bracket.id).update_one(set__voting_options__votes=round_votes, set__voting_options__totals=total_votes)
     bracket.reload()
-    emit('vote_cast', { "key": key }, broadcast=True)
+    emit('vote_cast', { "key": bracket.key }, broadcast=True)
     return { "msg": f"bracket option: {option} updated", "bracket": bracket}
 
 @app.route('/bracket/create', methods=['POST'])
