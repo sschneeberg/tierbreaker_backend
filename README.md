@@ -77,16 +77,17 @@ This key testing process can be seen in the `scratch work` directory.
 
 ### Routes
 
-| Method | Endpoint                      | Data expected                                                                                     | Data Returned                      | Purpose                                                      |
-| ------ | ----------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
-| GET    | /                             | N/A                                                                                               | Message                            | Ping route to confirm connection to server                   |
-| GET    | /brackets                     | N/A                                                                                               | List of all bracket objects        | Get all public tournament brackets                           |
-| GET    | /bracket/<bracket_key>        | Bracket key in url parameters                                                                     | Full bracket object                | Get a single bracket's information                           |
-| POST   | /bracket/create               | Request body: 'title', 'num_options', 'duration', 'end_display', 'private', 'options_list'        | Message and created bracket        | Create new bracket, initialize voting structures             |
-| PUT    | /bracket/<bracket_key>/vote   | Bracket key in url parameters, 'option' in request body                                           | Message and updated bracket object | Add vote to specific option for specific bracket             |
-| PUT    | /bracket/<bracket_key>/edit   | Bracket key in url parameters, updated fields in request body ('title', 'duration', or 'private') | Message and updated bracket object | Edit certain tournament parameters                           |
-| PUT    | /bracket/<bracket_key>/tally  | Bracket key in url parameters                                                                     | Message and updated bracket object | Tally votes and set up next round or generate winner display |
-| DELETE | /bracket/<bracket_key>/delete | Bracket key in url parameters                                                                     | Message                            | Delete tournament from database                              |
+| Method | Endpoint                        | Data expected                                                                                     | Data Returned                      | Purpose                                                      |
+| ------ | ------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| GET    | /                               | N/A                                                                                               | Message                            | Ping route to confirm connection to server                   |
+| GET    | /brackets                       | N/A                                                                                               | List of all bracket objects        | Get all public tournament brackets                           |
+| GET    | /bracket/<bracket_key>          | Bracket key in url parameters                                                                     | Full bracket object                | Get a single bracket's information                           |
+| POST   | /bracket/create                 | Request body: 'title', 'num_options', 'duration', 'end_display', 'private', 'options_list'        | Message and created bracket        | Create new bracket, initialize voting structures             |
+| PUT    | /bracket/<bracket_key>/vote     | Bracket key in url parameters, 'option' in request body                                           | Message and updated bracket object | Add vote to specific option for specific bracket             |
+| PUT    | /bracket/<bracket_key>/bulkvote | Bracket key in url parameters, 'option' and 'count' in request body                               | Message                            | Add multiple votes to specific option for specific bracket   |
+| PUT    | /bracket/<bracket_key>/edit     | Bracket key in url parameters, updated fields in request body ('title', 'duration', or 'private') | Message and updated bracket object | Edit certain tournament parameters                           |
+| PUT    | /bracket/<bracket_key>/tally    | Bracket key in url parameters                                                                     | Message and updated bracket object | Tally votes and set up next round or generate winner display |
+| DELETE | /bracket/<bracket_key>/delete   | Bracket key in url parameters                                                                     | Message                            | Delete tournament from database                              |
 
 ## Testing
 
